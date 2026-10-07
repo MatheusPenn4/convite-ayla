@@ -23,10 +23,13 @@ export function Hero() {
 
       <ArtImg name="sprig-divider" className="divider" eager />
 
-      <p className="hero__message" data-reveal>
-        Há um ano, nosso jardim ganhou sua flor mais preciosa. Venha celebrar o primeiro aninho da{" "}
-        {eventConfig.displayName} e fazer parte desse momento tão especial.
-      </p>
+      <div className="hero__message" data-reveal>
+        <p>
+          Há um ano, nosso jardim ganhou sua flor mais preciosa. Desde então, {eventConfig.displayName} trouxe mais
+          amor, luz e alegria para nossas vidas.
+        </p>
+        <p>Venha celebrar conosco o seu primeiro aninho e fazer parte desse momento tão especial.</p>
+      </div>
     </header>
   );
 }

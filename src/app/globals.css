@@ -542,6 +542,14 @@ html[data-hidden] .gw * {
   color: var(--ink-soft);
 }
 
+.hero__message p {
+  margin: 0;
+}
+
+.hero__message p + p {
+  margin-top: 0.7em;
+}
+
 .divider {
   width: min(15rem, 70%);
   margin: 1.6rem auto 1.2rem;
