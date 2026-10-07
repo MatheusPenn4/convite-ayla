@@ -87,8 +87,8 @@ function Hills() {
           <ellipse key={x} cx={x} cy={135 - (i % 3)} rx={7 + (i % 2) * 2} ry={6 + (i % 3)} />
         ))}
       </g>
-      <path d="M-20 152 C 30 138, 70 150, 112 141 C 150 133, 182 143, 220 136 L220 270 L-20 270Z" fill="#c9dcc8" opacity=".9" />
-      <path d="M-20 160 C 40 150, 90 158, 140 151 C 170 147, 196 152, 220 149 L220 270 L-20 270Z" fill="#b7d0b2" />
+      <path d="M-20 152 C 30 138, 70 150, 112 141 C 150 133, 182 143, 220 136 L220 270 L-20 270Z" fill="#c3e0b6" opacity=".9" />
+      <path d="M-20 160 C 40 150, 90 158, 140 151 C 170 147, 196 152, 220 149 L220 270 L-20 270Z" fill="#acd59a" />
     </>
   );
 }
@@ -142,7 +142,7 @@ function Arbor() {
 function Trees() {
   return (
     <>
-      <g fill="#a9c7a2">
+      <g fill="#9fcf8b">
         <ellipse cx="62" cy="160" rx="16" ry="7" />
         <ellipse cx="140" cy="158" rx="18" ry="7" />
         <ellipse cx="10" cy="162" rx="16" ry="8" />
@@ -158,75 +158,27 @@ function Trees() {
 }
 
 /* ---------------------------------------------------- campo cheio de flores */
-const MEADOW_TONES = ["#f4a9c4", "#f8cdd9", "#c9b2e8", "#ffffff", "#f6d77f", "#a9cbea"];
-const BLOSSOM_KIND = ["blush", "lavender", "sky", "butter"] as const;
-
-/** Fileiras de lavanda que convergem para o caramanchão (dão profundidade). */
-function LavenderRows() {
-  const rows: ReactNode[] = [];
-  const HORIZON = 168;
-  for (const side of [-1, 1]) {
-    for (let k = 0; k < 3; k++) {
-      const x0 = 100 + side * (40 + k * 30);
-      const x1 = 100 + side * (12 + k * 9);
-      const buds: ReactNode[] = [];
-      for (let i = 0; i <= 30; i++) {
-        const t = Math.pow(i / 30, 1.6); // mais espaçado perto, mais denso ao longe
-        const y = 252 - (252 - HORIZON) * t;
-        const x = x0 + (x1 - x0) * t;
-        const size = 4.2 * (1 - t) + 0.7;
-        buds.push(
-          <g key={i}>
-            <ellipse cx={r1(x)} cy={r1(y + size * 0.5)} rx={r1(size * 1.5)} ry={r1(size * 0.7)} fill="#8fae86" opacity=".9" />
-            <ellipse cx={r1(x)} cy={r1(y - size * 0.3)} rx={r1(size * 1.2)} ry={r1(size)} fill={i % 3 ? "#b49ad8" : "#c9b5e7"} />
-            <ellipse cx={r1(x - size * 0.3)} cy={r1(y - size * 0.6)} rx={r1(size * 0.45)} ry={r1(size * 0.4)} fill="#e6dcf5" opacity=".8" />
-          </g>,
-        );
-      }
-      rows.push(<g key={`${side}${k}`}>{buds.reverse()}</g>);
-    }
-  }
-  return <>{rows}</>;
-}
-
 function Meadow() {
   const rand = seeded(1212);
-  const dots = Array.from({ length: 60 }, () => {
-    const depth = Math.pow(rand(), 0.75); // mais flores perto da janela
-    const y = 168 + depth * 84;
-    let x = rand() * 220 - 10;
-    if (y < 200 && x > 80 && x < 120) x += x < 100 ? -24 : 24; // deixa o caminho livre
-    return { x: r1(x), y: r1(y), size: r1(0.55 + depth * 2.1), tone: Math.floor(rand() * MEADOW_TONES.length) };
-  });
-  const grass = Array.from({ length: 46 }, () => {
+  const grass = Array.from({ length: 70 }, () => {
     const y = 172 + rand() * 80;
     const x = rand() * 220 - 10;
-    const h = 2 + ((y - 172) / 80) * 6;
+    const h = 2 + ((y - 172) / 80) * 7;
     return `M${r1(x)} ${r1(y)} q ${r1(rand() * 2 - 1)} ${r1(-h / 2)} ${r1(rand() * 3 - 1.5)} ${r1(-h)}`;
   });
   return (
     <>
       <defs>
         <linearGradient id="gw-grass" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#bcd6ad" />
-          <stop offset="1" stopColor="#93b787" />
+          <stop offset="0" stopColor="#b8dd9c" />
+          <stop offset=".5" stopColor="#9fd083" />
+          <stop offset="1" stopColor="#84bf6c" />
         </linearGradient>
       </defs>
       <path d="M-20 170 C 40 162, 120 168, 220 160 L220 270 L-20 270Z" fill="url(#gw-grass)" />
       <path d="M66 270 C 84 222, 93 196, 96 170 L104 170 C 107 196, 116 222, 134 270Z" fill="#f4e7dc" />
       <path d="M66 270 C 84 222, 93 196, 96 170 M134 270 C 116 222, 107 196, 104 170" fill="none" stroke="#e2cdbd" strokeWidth="1.2" />
-      {[[92, 240, 3.2], [106, 226, 2.6], [97, 212, 2.2], [103, 200, 1.8], [99, 190, 1.4], [101, 181, 1]].map(([cx, cy, rx], i) => (
-        <ellipse key={i} cx={cx} cy={cy} rx={rx} ry={rx * 0.45} fill="#e6d3c3" />
-      ))}
-      <path d={grass.join(" ")} stroke="#7fa676" strokeWidth=".8" fill="none" strokeLinecap="round" opacity=".8" />
-      <LavenderRows />
-      {dots.map((d, i) =>
-        d.size > 1.9 ? (
-          <Blossom key={i} x={d.x} y={d.y} s={r1(d.size * 0.11 * 10) / 10} tone={BLOSSOM_KIND[d.tone % 4]} />
-        ) : (
-          <circle key={i} cx={d.x} cy={d.y} r={d.size} fill={MEADOW_TONES[d.tone]} />
-        ),
-      )}
+      <path d={grass.join(" ")} stroke="#6fae5c" strokeWidth=".8" fill="none" strokeLinecap="round" opacity=".7" />
     </>
   );
 }
