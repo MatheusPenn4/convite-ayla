@@ -242,3 +242,16 @@ export const HillsLayer = () => <SceneSvg><Hills /></SceneSvg>;
 export const TreesLayer = () => <SceneSvg><Trees /></SceneSvg>;
 export const MeadowLayer = () => <SceneSvg><Meadow /></SceneSvg>;
 export const FrontLayer = () => <SceneSvg><Foreground /></SceneSvg>;
+
+/** Vista completa (sem paralaxe), usada na imagem para compartilhar. */
+export function SceneContent() {
+  return (
+    <>
+      <Sky />
+      <Hills />
+      <Trees />
+      <Meadow />
+      <Foreground />
+    </>
+  );
+}

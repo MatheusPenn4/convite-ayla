@@ -10,3 +10,6 @@ next-env.d.ts
 npm-debug.log*
 .DS_Store
 Thumbs.db
+
+# Cartão gerado localmente (a versão publicada fica em /convite.png)
+convite-whatsapp.png

@@ -20,7 +20,7 @@ function Layer({ name, depth, className = "" }: { name: Parameters<typeof ArtImg
 }
 
 /* ------------------------------------------------------- moldura da janela */
-function WindowFrame() {
+export function WindowFrame() {
   return (
     <svg className="gw__frame" viewBox={VIEW} preserveAspectRatio="none" aria-hidden="true" focusable="false">
       <g fill="none" strokeLinecap="square">
