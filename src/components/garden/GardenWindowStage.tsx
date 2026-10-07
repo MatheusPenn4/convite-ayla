@@ -10,7 +10,6 @@ type Burst = { id: number; x: number; y: number };
 const PAN_X = 0.32;
 const PAN_Y = 0.08;
 const TILT_RANGE = 10; // graus de inclinação para o deslocamento máximo
-const IDLE_AFTER_MS = 2500;
 const clamp = (v: number) => Math.max(-1, Math.min(1, v));
 
 const PETALS = [
@@ -23,12 +22,13 @@ const PETALS = [
 /**
  * Dá vida à janela: as camadas se deslocam conforme o dedo, o mouse ou a
  * inclinação do celular (paralaxe), e um toque solta uma borboleta com pétalas.
- * Sem interação, a vista "respira" devagar. Tudo pausa fora da tela, em segundo
- * plano e com movimento reduzido.
+ * Só anima enquanto há movimento; nada roda fora da tela, em segundo plano
+ * ou com movimento reduzido.
  */
 export function GardenWindowStage({ label, children }: { label: string; children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
-  const input = useRef({ x: 0, y: 0, at: 0 });
+  const input = useRef({ x: 0, y: 0 });
+  const wake = useRef<() => void>(() => {});
   const [bursts, setBursts] = useState<Burst[]>([]);
   const nextId = useRef(1);
 
@@ -36,41 +36,49 @@ export function GardenWindowStage({ label, children }: { label: string; children
     const el = ref.current;
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+    // Cada camada é movida direto (sem recalcular estilos do desenho inteiro).
+    const layers = Array.from(el.querySelectorAll<HTMLElement>("[data-depth]")).map((node) => ({
+      node,
+      depth: Number(node.dataset.depth) || 0,
+    }));
     const cur = { x: 0, y: 0 };
     let raf = 0;
     let onScreen = false;
 
-    const loop = (t: number) => {
-      const i = input.current;
-      const idle = !i.at || t - i.at > IDLE_AFTER_MS;
-      const tx = idle ? Math.sin(t / 4200) * 0.3 : i.x;
-      const ty = idle ? Math.cos(t / 5300) * 0.25 : i.y;
-      cur.x += (tx - cur.x) * 0.1;
-      cur.y += (ty - cur.y) * 0.1;
-      el.style.setProperty("--gx", (-cur.x * el.clientWidth * PAN_X).toFixed(1));
-      el.style.setProperty("--gy", (-cur.y * el.clientHeight * PAN_Y).toFixed(1));
-      raf = requestAnimationFrame(loop);
+    const apply = () => {
+      const w = el.clientWidth * PAN_X;
+      const h = el.clientHeight * PAN_Y;
+      for (const { node, depth } of layers) {
+        node.style.transform = `translate3d(${(-cur.x * w * depth).toFixed(1)}px, ${(-cur.y * h * depth).toFixed(1)}px, 0)`;
+      }
     };
-    const start = () => {
+    // Só anima enquanto há movimento; parado, não gasta nada.
+    const loop = () => {
+      raf = 0;
+      const t = input.current;
+      cur.x += (t.x - cur.x) * 0.14;
+      cur.y += (t.y - cur.y) * 0.14;
+      apply();
+      if (Math.abs(t.x - cur.x) > 0.002 || Math.abs(t.y - cur.y) > 0.002) raf = requestAnimationFrame(loop);
+    };
+    const wakeUp = () => {
       if (!raf && onScreen && document.visibilityState === "visible") raf = requestAnimationFrame(loop);
     };
-    const stop = () => {
-      cancelAnimationFrame(raf);
-      raf = 0;
-    };
+    wake.current = wakeUp;
 
     const io = new IntersectionObserver(([entry]) => {
       onScreen = entry.isIntersecting;
-      if (onScreen) start();
-      else stop();
+      if (onScreen) wakeUp();
     });
     io.observe(el);
-    const onVisibility = () => (document.visibilityState === "visible" ? start() : stop());
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") wakeUp();
+    };
     document.addEventListener("visibilitychange", onVisibility);
 
     // Inclinação do celular. A referência é a posição em que a pessoa está
-    // segurando o aparelho, e ela acompanha devagar: a vista reage ao movimento
-    // e volta ao centro quando o celular fica parado. (No iPhone, os eventos só
+    // segurando o aparelho e acompanha devagar: a vista reage ao movimento e
+    // volta ao centro quando o celular fica parado. (No iPhone, os eventos só
     // chegam depois da permissão pedida em requestMotionPermission.)
     const base = { x: NaN, y: NaN };
     const onTilt = (e: DeviceOrientationEvent) => {
@@ -79,19 +87,16 @@ export function GardenWindowStage({ label, children }: { label: string; children
         base.x = e.gamma;
         base.y = e.beta;
       }
-      // Volta ao centro devagar (alguns segundos) quando o celular fica parado.
       base.x += (e.gamma - base.x) * 0.004;
       base.y += (e.beta - base.y) * 0.004;
-      input.current = {
-        x: clamp((e.gamma - base.x) / TILT_RANGE),
-        y: clamp((e.beta - base.y) / TILT_RANGE),
-        at: performance.now(),
-      };
+      input.current = { x: clamp((e.gamma - base.x) / TILT_RANGE), y: clamp((e.beta - base.y) / TILT_RANGE) };
+      wakeUp();
     };
     window.addEventListener("deviceorientation", onTilt);
 
     return () => {
-      stop();
+      cancelAnimationFrame(raf);
+      wake.current = () => {};
       io.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("deviceorientation", onTilt);
@@ -103,8 +108,8 @@ export function GardenWindowStage({ label, children }: { label: string; children
     input.current = {
       x: clamp(((e.clientX - r.left) / r.width - 0.5) * 2),
       y: clamp(((e.clientY - r.top) / r.height - 0.5) * 2),
-      at: performance.now(),
     };
+    wake.current();
   }
 
   function burst(e: PointerEvent<HTMLDivElement>) {
@@ -128,7 +133,10 @@ export function GardenWindowStage({ label, children }: { label: string; children
       aria-label={label}
       onPointerMove={track}
       onPointerDown={burst}
-      onPointerLeave={() => (input.current.at = 0)}
+      onPointerLeave={() => {
+        input.current = { x: 0, y: 0 };
+        wake.current();
+      }}
       onClick={requestMotionPermission}
     >
       {children}

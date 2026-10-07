@@ -1,17 +1,17 @@
 import { eventConfig } from "@/config/event";
-import { CornerBouquet, SprigDivider, TinySprig } from "@/components/garden/art";
+import { ArtImg } from "@/components/garden/ArtImg";
 import { Portrait } from "./Portrait";
 
 export function Hero() {
   return (
     <header className="hero">
-      <CornerBouquet className="hero__corner hero__corner--left sway" />
-      <CornerBouquet mirror className="hero__corner hero__corner--right sway sway--late" />
+      <ArtImg name="corner-bouquet" className="hero__corner hero__corner--left sway" eager />
+      <ArtImg name="corner-bouquet-mirror" className="hero__corner hero__corner--right sway sway--late" eager />
 
       <p className="hero__eyebrow">
-        <TinySprig className="hero__eyebrow-sprig" />
+        <ArtImg name="tiny-sprig" className="hero__eyebrow-sprig" eager />
         <span>Meu primeiro aninho</span>
-        <TinySprig className="hero__eyebrow-sprig hero__eyebrow-sprig--flip" />
+        <ArtImg name="tiny-sprig" className="hero__eyebrow-sprig hero__eyebrow-sprig--flip" eager />
       </p>
 
       <Portrait />
@@ -21,7 +21,7 @@ export function Hero() {
       </h1>
       <p className="hero__fullname">{eventConfig.fullName}</p>
 
-      <SprigDivider className="divider" />
+      <ArtImg name="sprig-divider" className="divider" eager />
 
       <p className="hero__message" data-reveal>
         Há um ano, nosso jardim ganhou sua flor mais preciosa. Venha celebrar o primeiro aninho da{" "}

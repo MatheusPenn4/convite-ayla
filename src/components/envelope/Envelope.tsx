@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
 import { eventConfig } from "@/config/event";
-import { Blossom, Butterfly, CornerBouquet, Rose, Sprig, SprigDivider } from "@/components/garden/art";
+import { Butterfly } from "@/components/garden/art";
+import { ArtImg } from "@/components/garden/ArtImg";
 import { Burst } from "@/components/garden/Burst";
 import { requestMotionPermission } from "@/lib/motion-permission";
 
@@ -83,8 +84,8 @@ export function Envelope() {
 
   return (
     <section className={`envelope-screen${phase === "opening" ? " is-opening" : ""}`} aria-label="Abertura do convite">
-      <CornerBouquet className="envelope-screen__corner envelope-screen__corner--tl" />
-      <CornerBouquet className="envelope-screen__corner envelope-screen__corner--br" />
+      <ArtImg name="corner-bouquet" className="envelope-screen__corner envelope-screen__corner--tl" eager />
+      <ArtImg name="corner-bouquet" className="envelope-screen__corner envelope-screen__corner--br" eager />
 
       <p className="envelope-screen__lead">Um jardim de amor espera por você</p>
 
@@ -102,7 +103,7 @@ export function Envelope() {
           <span className="envelope__card">
             <span className="envelope__card-eyebrow">Meu primeiro aninho</span>
             <span className="envelope__card-name">{eventConfig.displayName}</span>
-            <SprigDivider className="envelope__card-sprig" />
+            <ArtImg name="sprig-divider" className="envelope__card-sprig" eager />
           </span>
           <svg className="envelope__pocket" viewBox="0 0 100 70" preserveAspectRatio="none" aria-hidden="true" focusable="false">
             <defs>
@@ -120,13 +121,7 @@ export function Envelope() {
             <path d="M0 70 L50 33 L100 70Z" fill="url(#env-bottom)" />
             <path d="M0 70 L50 33 L100 70" fill="none" stroke="#e7a9bf" strokeOpacity=".55" strokeWidth=".35" vectorEffect="non-scaling-stroke" />
           </svg>
-          <svg className="envelope__flowers" viewBox="0 0 120 70" aria-hidden="true" focusable="false">
-            <Sprig x={22} y={68} r={-50} length={58} leaves={5} soft />
-            <Sprig x={26} y={68} r={-12} length={40} leaves={3} />
-            <Rose x={30} y={56} s={0.38} tone="rose" />
-            <Blossom x={52} y={61} s={0.5} tone="sky" />
-            <Blossom x={14} y={46} s={0.42} tone="lavender" />
-          </svg>
+          <ArtImg name="envelope-flowers" className="envelope__flowers" eager />
           <span className="envelope__flap">
             <svg viewBox="0 0 100 44" preserveAspectRatio="none" aria-hidden="true" focusable="false">
               <defs>

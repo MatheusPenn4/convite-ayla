@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { eventConfig } from "@/config/event";
 import { getPhoto } from "@/lib/photo";
-import { Butterfly, FrameCluster, Wreath } from "@/components/garden/art";
+import { Butterfly } from "@/components/garden/art";
+import { ArtImg } from "@/components/garden/ArtImg";
 import { GardenWindow } from "@/components/garden/GardenWindow";
 
 export function Portrait() {
@@ -23,10 +24,10 @@ export function Portrait() {
           <GardenWindow />
         )}
       </div>
-      <FrameCluster className="portrait__cluster" />
+      <ArtImg name="frame-cluster" className="portrait__cluster" eager />
       <Butterfly tone="lilac" className="portrait__butterfly perched" />
       <p className="age-badge">
-        <Wreath className="age-badge__wreath" />
+        <ArtImg name="wreath" className="age-badge__wreath" eager />
         <span className="age-badge__num">{eventConfig.age}</span>
         <span className="age-badge__word">{eventConfig.age === 1 ? "ano" : "anos"}</span>
       </p>

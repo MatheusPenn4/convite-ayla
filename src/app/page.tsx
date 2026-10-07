@@ -1,4 +1,5 @@
-import { CornerBouquet, GardenDefs } from "@/components/garden/art";
+import { GardenDefs } from "@/components/garden/art";
+import { ArtImg } from "@/components/garden/ArtImg";
 import { AmbientGarden } from "@/components/garden/AmbientGarden";
 import { Envelope } from "@/components/envelope/Envelope";
 import { Hero } from "@/components/invite/Hero";
@@ -20,10 +21,10 @@ export default function InvitationPage() {
         <style>{`.envelope-screen{display:none!important}`}</style>
       </noscript>
       <div className="side-garden" aria-hidden="true">
-        <CornerBouquet className="side-garden__piece side-garden__piece--tl" />
-        <CornerBouquet className="side-garden__piece side-garden__piece--bl" />
-        <CornerBouquet mirror className="side-garden__piece side-garden__piece--tr" />
-        <CornerBouquet mirror className="side-garden__piece side-garden__piece--br" />
+        <ArtImg name="corner-bouquet" className="side-garden__piece side-garden__piece--tl" />
+        <ArtImg name="corner-bouquet" className="side-garden__piece side-garden__piece--bl" />
+        <ArtImg name="corner-bouquet-mirror" className="side-garden__piece side-garden__piece--tr" />
+        <ArtImg name="corner-bouquet-mirror" className="side-garden__piece side-garden__piece--br" />
       </div>
       <AmbientGarden />
 

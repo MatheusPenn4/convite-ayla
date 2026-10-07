@@ -1,5 +1,6 @@
 import { eventConfig } from "@/config/event";
-import { BottomGarland, Butterfly } from "@/components/garden/art";
+import { Butterfly } from "@/components/garden/art";
+import { ArtImg } from "@/components/garden/ArtImg";
 
 export function Closing() {
   return (
@@ -10,7 +11,7 @@ export function Closing() {
         <span>Com carinho,</span>
         <span className="closing__family">família da {eventConfig.displayName}</span>
       </p>
-      <BottomGarland className="closing__garland" />
+      <ArtImg name="bottom-garland" className="closing__garland" />
     </footer>
   );
 }

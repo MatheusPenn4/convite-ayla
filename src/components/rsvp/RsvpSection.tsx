@@ -5,7 +5,8 @@ import { eventConfig } from "@/config/event";
 import type { SavedRsvp } from "@/lib/rsvp-types";
 import { peopleLabel } from "@/lib/validation";
 import { Burst } from "@/components/garden/Burst";
-import { Butterfly, TinySprig } from "@/components/garden/art";
+import { Butterfly } from "@/components/garden/art";
+import { ArtImg } from "@/components/garden/ArtImg";
 import { CheckIcon } from "@/components/invite/icons";
 import { RsvpForm } from "./RsvpForm";
 import { readConfirmed } from "./storage";
@@ -36,7 +37,7 @@ export function RsvpSection({ deadline }: { deadline: string | null }) {
     <section className="card rsvp" id="confirmar" aria-labelledby="rsvp-titulo" data-reveal>
       <Butterfly tone="sky" className="rsvp__butterfly perched" />
       <h2 className="section-title" id="rsvp-titulo">
-        <TinySprig className="section-title__sprig" />
+        <ArtImg name="tiny-sprig" className="section-title__sprig" />
         Confirmação de presença
       </h2>
 

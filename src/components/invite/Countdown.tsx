@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { eventStartMs } from "@/lib/event-info";
-import { Blossom, Cosmos, Rose, Sprig } from "@/components/garden/art";
+import { ArtImg } from "@/components/garden/ArtImg";
 
 const UNITS = [
   { key: "days", one: "dia", many: "dias", ms: 86_400_000 },
@@ -18,18 +18,6 @@ function split(remaining: number) {
     rest -= value * u.ms;
     return { ...u, value };
   });
-}
-
-function CornerFlowers() {
-  return (
-    <svg className="countdown__flowers" viewBox="0 0 120 80" aria-hidden="true" focusable="false">
-      <Sprig x={20} y={74} r={-50} length={60} leaves={4} soft />
-      <Sprig x={22} y={74} r={-12} length={46} leaves={3} />
-      <Rose x={28} y={60} s={0.42} tone="lilac" />
-      <Cosmos x={56} y={66} s={0.36} tone="blush" r={14} />
-      <Blossom x={10} y={52} s={0.5} tone="sky" />
-    </svg>
-  );
 }
 
 export function Countdown() {
@@ -63,8 +51,8 @@ export function Countdown() {
 
   return (
     <section className="countdown" aria-labelledby="contagem-titulo" data-reveal>
-      <CornerFlowers />
-      <CornerFlowers />
+      <ArtImg name="countdown-flowers" className="countdown__flowers" />
+      <ArtImg name="countdown-flowers" className="countdown__flowers" />
       <h2 className="section-title section-title--script" id="contagem-titulo">
         {arrived ? "Chegou o momento de celebrar!" : "Falta pouco para o nosso jardim florescer"}
       </h2>

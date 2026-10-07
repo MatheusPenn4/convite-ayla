@@ -1,5 +1,5 @@
 import { getEventDisplay } from "@/lib/event-info";
-import { TinySprig } from "@/components/garden/art";
+import { ArtImg } from "@/components/garden/ArtImg";
 import { CalendarIcon, ClockIcon, PinIcon, RouteIcon } from "./icons";
 
 export function PartyDetails() {
@@ -9,7 +9,7 @@ export function PartyDetails() {
   return (
     <section className="card details" aria-labelledby="detalhes-titulo" data-reveal>
       <h2 className="section-title" id="detalhes-titulo">
-        <TinySprig className="section-title__sprig" />
+        <ArtImg name="tiny-sprig" className="section-title__sprig" />
         Celebre com a gente
       </h2>
 
