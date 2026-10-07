@@ -284,9 +284,10 @@ input {
   isolation: isolate;
 }
 
+/* Camadas com o dobro da largura da janela; quanto mais longe, mais se deslocam. */
 .gw__layer {
   position: absolute;
-  inset: -10%;
+  inset: -10% -50%;
   transform: translate3d(calc(var(--gx) * var(--d) * 1px), calc(var(--gy) * var(--d) * 1px), 0);
   will-change: transform;
   pointer-events: none;
@@ -332,6 +333,12 @@ input {
 }
 
 /* Borboletas voando dentro da vista */
+.gw__flyers,
+.gw__pollen {
+  transform: translate3d(calc(var(--gx) * var(--d) * 1px), calc(var(--gy) * var(--d) * 1px), 0);
+  will-change: transform;
+}
+
 .gw__flyers {
   position: absolute;
   inset: 0;

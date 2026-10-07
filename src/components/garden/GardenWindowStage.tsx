@@ -6,8 +6,10 @@ import { Butterfly, PetalShape } from "./art";
 
 type Burst = { id: number; x: number; y: number };
 
-const MAX_SHIFT = 16; // deslocamento máximo (px) da camada mais próxima
-const TILT_RANGE = 12; // graus de inclinação para o deslocamento máximo
+// Deslocamento máximo da paisagem distante, em fração do tamanho da janela.
+const PAN_X = 0.32;
+const PAN_Y = 0.08;
+const TILT_RANGE = 10; // graus de inclinação para o deslocamento máximo
 const IDLE_AFTER_MS = 2500;
 const clamp = (v: number) => Math.max(-1, Math.min(1, v));
 
@@ -41,12 +43,12 @@ export function GardenWindowStage({ label, children }: { label: string; children
     const loop = (t: number) => {
       const i = input.current;
       const idle = !i.at || t - i.at > IDLE_AFTER_MS;
-      const tx = idle ? Math.sin(t / 4200) * 0.45 : i.x;
-      const ty = idle ? Math.cos(t / 5300) * 0.3 : i.y;
-      cur.x += (tx - cur.x) * 0.06;
-      cur.y += (ty - cur.y) * 0.06;
-      el.style.setProperty("--gx", (-cur.x * MAX_SHIFT).toFixed(2));
-      el.style.setProperty("--gy", (-cur.y * MAX_SHIFT * 0.6).toFixed(2));
+      const tx = idle ? Math.sin(t / 4200) * 0.3 : i.x;
+      const ty = idle ? Math.cos(t / 5300) * 0.25 : i.y;
+      cur.x += (tx - cur.x) * 0.1;
+      cur.y += (ty - cur.y) * 0.1;
+      el.style.setProperty("--gx", (-cur.x * el.clientWidth * PAN_X).toFixed(1));
+      el.style.setProperty("--gy", (-cur.y * el.clientHeight * PAN_Y).toFixed(1));
       raf = requestAnimationFrame(loop);
     };
     const start = () => {
@@ -77,8 +79,9 @@ export function GardenWindowStage({ label, children }: { label: string; children
         base.x = e.gamma;
         base.y = e.beta;
       }
-      base.x += (e.gamma - base.x) * 0.01;
-      base.y += (e.beta - base.y) * 0.01;
+      // Volta ao centro devagar (alguns segundos) quando o celular fica parado.
+      base.x += (e.gamma - base.x) * 0.004;
+      base.y += (e.beta - base.y) * 0.004;
       input.current = {
         x: clamp((e.gamma - base.x) / TILT_RANGE),
         y: clamp((e.beta - base.y) / TILT_RANGE),

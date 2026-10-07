@@ -22,12 +22,14 @@ function seeded(seed: number) {
 }
 const r1 = (n: number) => Math.round(n * 10) / 10;
 
+/** A cena é mais larga que a janela: inclinando, aparecem as laterais do jardim. */
+const SCENE = "-100 -25 400 300";
 const VIEW = "0 0 200 250";
 
 function Layer({ depth, className = "", children }: { depth: number; className?: string; children: ReactNode }) {
   return (
     <div className={`gw__layer ${className}`} style={{ "--d": depth } as CSSProperties} aria-hidden="true">
-      <svg viewBox={VIEW} preserveAspectRatio="xMidYMax slice" focusable="false">
+      <svg viewBox={SCENE} preserveAspectRatio="xMidYMid slice" focusable="false">
         {children}
       </svg>
     </div>
@@ -51,7 +53,7 @@ function Sky() {
           <stop offset="1" stopColor="#ffe9d2" stopOpacity="0" />
         </radialGradient>
       </defs>
-      <rect x="-20" y="-20" width="240" height="290" fill="url(#gw-sky)" />
+      <rect x="-120" y="-40" width="440" height="330" fill="url(#gw-sky)" />
       <linearGradient id="gw-ray" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stopColor="#fffaf0" stopOpacity=".55" />
         <stop offset="1" stopColor="#fffaf0" stopOpacity="0" />
@@ -69,6 +71,12 @@ function Sky() {
         <ellipse cx="52" cy="43" rx="15" ry="8" />
         <ellipse cx="30" cy="45" rx="11" ry="6" />
       </g>
+      <g className="gw-cloud" fill="#fff" opacity=".7">
+        <ellipse cx="-50" cy="34" rx="24" ry="6.5" />
+        <ellipse cx="-40" cy="29" rx="13" ry="7" />
+        <ellipse cx="250" cy="56" rx="28" ry="7" />
+        <ellipse cx="262" cy="50" rx="15" ry="8" />
+      </g>
       <g className="gw-cloud gw-cloud--slow" fill="#fff" opacity=".6">
         <ellipse cx="150" cy="30" rx="22" ry="5.5" />
         <ellipse cx="160" cy="26" rx="12" ry="6" />
@@ -81,14 +89,14 @@ function Sky() {
 function Hills() {
   return (
     <>
-      <path d="M-20 142 C 20 124, 60 134, 96 126 C 130 118, 168 130, 220 120 L220 270 L-20 270Z" fill="#dccfee" opacity=".85" />
+      <path d="M-120 130 C -80 118, -40 136, -10 132 C 20 124, 60 134, 96 126 C 130 118, 168 130, 220 120 C 250 114, 280 126, 320 118 L320 290 L-120 290Z" fill="#dccfee" opacity=".85" />
       <g fill="#cdbfe4" opacity=".75">
-        {[-6, 8, 20, 34, 50, 64, 140, 154, 168, 182, 196, 210].map((x, i) => (
+        {[-96, -82, -66, -50, -34, -20, -6, 8, 20, 34, 50, 64, 140, 154, 168, 182, 196, 210, 226, 242, 258, 274, 290].map((x, i) => (
           <ellipse key={x} cx={x} cy={135 - (i % 3)} rx={7 + (i % 2) * 2} ry={6 + (i % 3)} />
         ))}
       </g>
-      <path d="M-20 152 C 30 138, 70 150, 112 141 C 150 133, 182 143, 220 136 L220 270 L-20 270Z" fill="#c3e0b6" opacity=".9" />
-      <path d="M-20 160 C 40 150, 90 158, 140 151 C 170 147, 196 152, 220 149 L220 270 L-20 270Z" fill="#acd59a" />
+      <path d="M-120 146 C -70 136, -40 150, 0 146 C 30 138, 70 150, 112 141 C 150 133, 182 143, 220 136 C 260 130, 290 142, 320 136 L320 290 L-120 290Z" fill="#c3e0b6" opacity=".9" />
+      <path d="M-120 156 C -60 150, -20 160, 40 154 C 90 158, 120 152, 140 151 C 170 147, 196 152, 240 148 C 270 146, 300 152, 320 150 L320 290 L-120 290Z" fill="#acd59a" />
     </>
   );
 }
@@ -147,7 +155,17 @@ function Trees() {
         <ellipse cx="140" cy="158" rx="18" ry="7" />
         <ellipse cx="10" cy="162" rx="16" ry="8" />
         <ellipse cx="192" cy="157" rx="16" ry="8" />
+        <ellipse cx="-40" cy="160" rx="22" ry="8" />
+        <ellipse cx="-88" cy="158" rx="16" ry="7" />
+        <ellipse cx="236" cy="158" rx="20" ry="8" />
+        <ellipse cx="286" cy="160" rx="18" ry="8" />
       </g>
+      <BlossomTree x={-62} y={168} s={1.25} />
+      <BlossomTree x={-20} y={158} s={0.6} />
+      <BlossomTree x={-92} y={156} s={0.55} />
+      <BlossomTree x={256} y={168} s={1.2} />
+      <BlossomTree x={218} y={156} s={0.55} />
+      <BlossomTree x={294} y={158} s={0.65} />
       <BlossomTree x={34} y={164} s={1.05} />
       <BlossomTree x={170} y={160} s={0.85} />
       <BlossomTree x={128} y={156} s={0.5} />
@@ -160,9 +178,9 @@ function Trees() {
 /* ---------------------------------------------------- campo cheio de flores */
 function Meadow() {
   const rand = seeded(1212);
-  const grass = Array.from({ length: 70 }, () => {
+  const grass = Array.from({ length: 140 }, () => {
     const y = 172 + rand() * 80;
-    const x = rand() * 220 - 10;
+    const x = rand() * 420 - 110;
     const h = 2 + ((y - 172) / 80) * 7;
     return `M${r1(x)} ${r1(y)} q ${r1(rand() * 2 - 1)} ${r1(-h / 2)} ${r1(rand() * 3 - 1.5)} ${r1(-h)}`;
   });
@@ -175,7 +193,7 @@ function Meadow() {
           <stop offset="1" stopColor="#84bf6c" />
         </linearGradient>
       </defs>
-      <path d="M-20 170 C 40 162, 120 168, 220 160 L220 270 L-20 270Z" fill="url(#gw-grass)" />
+      <path d="M-120 168 C -40 160, 40 166, 100 165 C 160 166, 240 158, 320 164 L320 290 L-120 290Z" fill="url(#gw-grass)" />
       <path d="M66 270 C 84 222, 93 196, 96 170 L104 170 C 107 196, 116 222, 134 270Z" fill="#f4e7dc" />
       <path d="M66 270 C 84 222, 93 196, 96 170 M134 270 C 116 222, 107 196, 104 170" fill="none" stroke="#e2cdbd" strokeWidth="1.2" />
       <path d={grass.join(" ")} stroke="#6fae5c" strokeWidth=".8" fill="none" strokeLinecap="round" opacity=".7" />
@@ -218,6 +236,18 @@ function Foreground() {
         <Bud x={194} y={152} s={0.85} tone="blush" r={6} />
         <Blossom x={190} y={212} s={0.72} tone="lavender" />
       </g>
+      <g className="gw-sway gw-sway--c">
+        <Stem from={[-14, 262]} to={[-20, 182]} bend={8} />
+        <Rose x={-20} y={182} s={0.66} tone="blush" />
+        <Lavender x={-34} y={262} r={-10} s={1.2} />
+        <Blossom x={-6} y={220} s={0.7} tone="butter" />
+      </g>
+      <g className="gw-sway">
+        <Stem from={[214, 262]} to={[220, 186]} bend={-8} />
+        <Rose x={220} y={186} s={0.64} tone="rose" r={-10} />
+        <Lavender x={232} y={262} r={10} s={1.2} />
+        <Blossom x={208} y={224} s={0.7} tone="sky" />
+      </g>
     </>
   );
 }
@@ -242,19 +272,19 @@ function WindowFrame() {
 export function GardenWindow() {
   return (
     <GardenWindowStage label="Janela em arco com vista para um jardim encantado, cheio de flores e borboletas">
-      <Layer depth={0.15} className="gw__sky"><Sky /></Layer>
-      <Layer depth={0.3}><Hills /></Layer>
-      <Layer depth={0.45}><Trees /></Layer>
-      <Layer depth={0.65}><Meadow /></Layer>
-      <div className="gw__flyers" aria-hidden="true">
+      <Layer depth={1} className="gw__sky"><Sky /></Layer>
+      <Layer depth={0.92}><Hills /></Layer>
+      <Layer depth={0.78}><Trees /></Layer>
+      <Layer depth={0.62}><Meadow /></Layer>
+      <div className="gw__flyers" style={{ "--d": 0.55 } as CSSProperties} aria-hidden="true">
         <div className="gw-fly gw-fly--a"><Butterfly tone="rose" className="flutter" /></div>
         <div className="gw-fly gw-fly--b"><Butterfly tone="lilac" className="flutter flutter--slow" /></div>
         <div className="gw-fly gw-fly--c"><Butterfly tone="sky" className="flutter" /></div>
       </div>
-      <div className="gw__pollen" aria-hidden="true">
+      <div className="gw__pollen" style={{ "--d": 0.45 } as CSSProperties} aria-hidden="true">
         {Array.from({ length: 9 }, (_, i) => <span key={i} />)}
       </div>
-      <Layer depth={1} className="gw__front"><Foreground /></Layer>
+      <Layer depth={0.22} className="gw__front"><Foreground /></Layer>
       <div className="gw__glass" aria-hidden="true" />
       <WindowFrame />
       <div className="gw__rim" aria-hidden="true" />
