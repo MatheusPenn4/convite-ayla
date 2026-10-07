@@ -1,0 +1,3 @@
+Coloque aqui a foto da Ayla (ex.: ayla.jpg) e informe o caminho em
+src/config/event.ts → photo.src: "/images/ayla.jpg".
+Enquanto não houver foto, o convite mostra o monograma floral "AS".
