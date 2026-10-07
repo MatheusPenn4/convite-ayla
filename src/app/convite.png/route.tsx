@@ -116,7 +116,7 @@ function artSvg() {
       <g transform={`translate(${x - 70} ${y + 250}) rotate(-18) scale(1.05)`}>
         <ButterflyShape tone="rose" />
       </g>
-      <g transform="translate(915 1052) rotate(14) scale(.85)">
+      <g transform="translate(915 1030) rotate(14) scale(.85)">
         <ButterflyShape tone="sky" />
       </g>
 
@@ -173,20 +173,15 @@ export async function GET() {
         <div style={{ ...center, top: 692, fontFamily: "Pinyon Script", fontSize: 156, lineHeight: 1.2, color: "#a6466f" }}>
           {eventConfig.displayName}
         </div>
-        <div
-          style={{ ...center, top: 892, fontFamily: "Fraunces Regular", fontSize: 24, letterSpacing: 6, color: "#6c4f66" }}
-        >
-          {eventConfig.fullName.toUpperCase()}
-        </div>
 
-        <div style={{ ...center, top: 950, fontFamily: "Fraunces", fontSize: 44 }}>
+        <div style={{ ...center, top: 922, fontFamily: "Fraunces", fontSize: 44 }}>
           {`${e.weekday}, ${e.dateLong} · ${e.time}`}
         </div>
         {venue ? (
-          <div style={{ ...center, top: 1010, fontFamily: "Fraunces Regular", fontSize: 34, color: "#6c4f66" }}>{venue}</div>
+          <div style={{ ...center, top: 984, fontFamily: "Fraunces Regular", fontSize: 34, color: "#6c4f66" }}>{venue}</div>
         ) : null}
 
-        <div style={{ ...center, top: 1076 }}>
+        <div style={{ ...center, top: 1056 }}>
           <div
             style={{
               display: "flex",
@@ -203,7 +198,7 @@ export async function GET() {
           </div>
         </div>
 
-        <div style={{ ...center, top: 1166, fontFamily: "Fraunces Italic", fontSize: 30, color: "#6c4f66" }}>
+        <div style={{ ...center, top: 1152, fontFamily: "Fraunces Italic", fontSize: 30, color: "#6c4f66" }}>
           {`Com carinho, família da ${eventConfig.displayName}`}
         </div>
       </div>
