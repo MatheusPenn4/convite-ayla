@@ -684,6 +684,10 @@ html[data-hidden] .gw * {
   margin: 0;
 }
 
+.place__line {
+  display: block;
+}
+
 .place__name {
   font-weight: 700;
   font-size: 1.1rem;

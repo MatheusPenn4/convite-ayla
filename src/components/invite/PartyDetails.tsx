@@ -38,7 +38,16 @@ export function PartyDetails() {
         <div className="place__text">
           <h3 className="sr-only">Local</h3>
           {e.venueName ? <p className="place__name">{e.venueName}</p> : null}
-          {e.address ? <p>{e.address}</p> : null}
+          {e.address ? (
+            <p>
+              {/* "Rua, número - Bairro" em linhas separadas, sem quebrar no meio do bairro */}
+              {e.address.split(" - ").map((part, i) => (
+                <span className="place__line" key={i}>
+                  {part}
+                </span>
+              ))}
+            </p>
+          ) : null}
           {e.cityState ? <p>{e.cityState}</p> : null}
           {!hasPlace ? <p className="place__soon">Local e endereço em breve</p> : null}
         </div>

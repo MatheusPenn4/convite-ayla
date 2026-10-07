@@ -17,15 +17,15 @@ export const eventConfig = {
   /**
    * Instante exato da festa com fuso explícito (ISO 8601).
    * A contagem regressiva usa este valor e não depende do fuso do celular.
-   * Valor inicial a validar quando a cidade for preenchida.
+   * Cuiabá/MT: UTC−4, sem horário de verão.
    */
   startsAt: "2026-12-13T19:00:00-04:00",
   /** Fuso IANA usado para exibir data e horário. */
   timeZone: "America/Cuiaba",
 
-  venueName: "[NOME DO LOCAL]",
-  address: "[ENDEREÇO COMPLETO]",
-  cityState: "[CIDADE/UF]",
+  venueName: "Espaço Amires Buffet",
+  address: "Av. Tancredo Neves, 370 - Jardim Kennedy",
+  cityState: "Cuiabá/MT, CEP 78070-025",
 
   /** Prazo para confirmar presença no formato AAAA-MM-DD (ex.: "2026-11-30"). */
   rsvpDeadline: "[DATA LIMITE]",
