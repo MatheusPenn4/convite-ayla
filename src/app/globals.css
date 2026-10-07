@@ -286,7 +286,7 @@ input {
 
 .gw__layer {
   position: absolute;
-  inset: -7%;
+  inset: -10%;
   transform: translate3d(calc(var(--gx) * var(--d) * 1px), calc(var(--gy) * var(--d) * 1px), 0);
   will-change: transform;
   pointer-events: none;

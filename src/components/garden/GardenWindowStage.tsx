@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from "react";
+import { requestMotionPermission } from "@/lib/motion-permission";
 import { Butterfly, PetalShape } from "./art";
 
 type Burst = { id: number; x: number; y: number };
 
-const MAX_SHIFT = 11; // deslocamento máximo (px) da camada mais próxima
+const MAX_SHIFT = 16; // deslocamento máximo (px) da camada mais próxima
+const TILT_RANGE = 12; // graus de inclinação para o deslocamento máximo
 const IDLE_AFTER_MS = 2500;
 const clamp = (v: number) => Math.max(-1, Math.min(1, v));
 
@@ -64,20 +66,32 @@ export function GardenWindowStage({ label, children }: { label: string; children
     const onVisibility = () => (document.visibilityState === "visible" ? start() : stop());
     document.addEventListener("visibilitychange", onVisibility);
 
-    // Inclinação do celular (Android). No iPhone exigiria um pedido de permissão; lá vale o toque.
-    const DOE = window.DeviceOrientationEvent as unknown as { requestPermission?: unknown } | undefined;
-    const canTilt = DOE && typeof DOE.requestPermission !== "function";
+    // Inclinação do celular. A referência é a posição em que a pessoa está
+    // segurando o aparelho, e ela acompanha devagar: a vista reage ao movimento
+    // e volta ao centro quando o celular fica parado. (No iPhone, os eventos só
+    // chegam depois da permissão pedida em requestMotionPermission.)
+    const base = { x: NaN, y: NaN };
     const onTilt = (e: DeviceOrientationEvent) => {
       if (e.gamma == null || e.beta == null) return;
-      input.current = { x: clamp(e.gamma / 25), y: clamp((e.beta - 45) / 25), at: performance.now() };
+      if (Number.isNaN(base.x)) {
+        base.x = e.gamma;
+        base.y = e.beta;
+      }
+      base.x += (e.gamma - base.x) * 0.01;
+      base.y += (e.beta - base.y) * 0.01;
+      input.current = {
+        x: clamp((e.gamma - base.x) / TILT_RANGE),
+        y: clamp((e.beta - base.y) / TILT_RANGE),
+        at: performance.now(),
+      };
     };
-    if (canTilt) window.addEventListener("deviceorientation", onTilt);
+    window.addEventListener("deviceorientation", onTilt);
 
     return () => {
       stop();
       io.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
-      if (canTilt) window.removeEventListener("deviceorientation", onTilt);
+      window.removeEventListener("deviceorientation", onTilt);
     };
   }, []);
 
@@ -112,6 +126,7 @@ export function GardenWindowStage({ label, children }: { label: string; children
       onPointerMove={track}
       onPointerDown={burst}
       onPointerLeave={() => (input.current.at = 0)}
+      onClick={requestMotionPermission}
     >
       {children}
       {bursts.map((b) => (

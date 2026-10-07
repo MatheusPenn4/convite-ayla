@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react
 import { eventConfig } from "@/config/event";
 import { Blossom, Butterfly, CornerBouquet, Rose, Sprig, SprigDivider } from "@/components/garden/art";
 import { Burst } from "@/components/garden/Burst";
+import { requestMotionPermission } from "@/lib/motion-permission";
 
 type Phase = "closed" | "opening" | "done";
 
@@ -66,6 +67,8 @@ export function Envelope() {
   }, [phase]);
 
   const open = useCallback(() => {
+    // Aproveita o toque de abertura para liberar o sensor de inclinação no iPhone.
+    requestMotionPermission();
     focusTitle.current = true;
     setPhase((p) => (p === "closed" ? "opening" : p));
   }, []);
