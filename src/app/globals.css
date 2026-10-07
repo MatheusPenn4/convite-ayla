@@ -266,36 +266,236 @@ input {
   pointer-events: none;
 }
 
-.monogram {
+/* --------------------------------------------------------------------------
+   Janela com vista para o jardim (enquanto não há foto)
+   -------------------------------------------------------------------------- */
+
+.gw {
+  --gx: 0;
+  --gy: 0;
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
+  overflow: hidden;
+  border-radius: inherit;
+  background: #f5dcea;
+  cursor: pointer;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+  isolation: isolate;
 }
 
-.monogram__art {
+.gw__layer {
   position: absolute;
-  inset: 0;
+  inset: -7%;
+  transform: translate3d(calc(var(--gx) * var(--d) * 1px), calc(var(--gy) * var(--d) * 1px), 0);
+  will-change: transform;
+  pointer-events: none;
+}
+
+.gw__layer svg {
   width: 100%;
   height: 100%;
 }
 
-/* Iniciais retas, centralizadas na área livre do arco (acima das flores). */
-.monogram__letters {
+.gw-cloud {
+  animation: gw-cloud 38s ease-in-out infinite alternate;
+}
+
+.gw-cloud--slow {
+  animation-duration: 52s;
+  animation-direction: alternate-reverse;
+}
+
+.gw-rays {
+  animation: gw-rays 7s ease-in-out infinite alternate;
+}
+
+@keyframes gw-rays {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+
+.gw-sway {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: gw-sway 6s ease-in-out infinite alternate;
+}
+
+.gw-sway--b {
+  animation-duration: 7.5s;
+  animation-delay: -2s;
+}
+
+.gw-sway--c {
+  animation-duration: 6.8s;
+  animation-delay: -4s;
+}
+
+/* Borboletas voando dentro da vista */
+.gw__flyers {
   position: absolute;
-  inset: 12% 0 24%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-left: 0.06em; /* compensa o espaçamento após a última letra */
-  font-family: var(--font-heading);
-  font-weight: 300;
-  font-size: clamp(5.4rem, 29vw, 8.25rem);
-  font-variation-settings: "SOFT" 100, "opsz" 144;
-  line-height: 1;
-  letter-spacing: 0.06em;
-  color: var(--rose-700);
-  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.7);
+  inset: 0;
+  pointer-events: none;
+}
+
+.gw-fly {
+  position: absolute;
+  width: 11%;
+  will-change: transform;
+}
+
+.gw-fly--a {
+  left: -14%;
+  top: 46%;
+  animation: gw-fly-a 15s ease-in-out infinite;
+}
+
+.gw-fly--b {
+  left: 104%;
+  top: 30%;
+  width: 9%;
+  animation: gw-fly-b 19s ease-in-out -6s infinite;
+}
+
+.gw-fly--c {
+  left: 30%;
+  top: 104%;
+  width: 8%;
+  animation: gw-fly-c 23s ease-in-out -11s infinite;
+}
+
+/* Pólen brilhando */
+.gw__pollen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.gw__pollen span {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fffbea 0 35%, rgba(255, 238, 190, 0.7) 50%, rgba(255, 238, 190, 0) 75%);
+  animation: gw-pollen 7s ease-in-out infinite;
+}
+
+.gw__pollen span:nth-child(1) { left: 18%; top: 62%; animation-delay: -1s; }
+.gw__pollen span:nth-child(2) { left: 32%; top: 48%; animation-delay: -3.5s; animation-duration: 8s; }
+.gw__pollen span:nth-child(3) { left: 46%; top: 70%; animation-delay: -5s; }
+.gw__pollen span:nth-child(4) { left: 58%; top: 40%; animation-delay: -2s; animation-duration: 9s; }
+.gw__pollen span:nth-child(5) { left: 70%; top: 58%; animation-delay: -6s; }
+.gw__pollen span:nth-child(6) { left: 82%; top: 46%; animation-delay: -0.5s; animation-duration: 6.5s; }
+.gw__pollen span:nth-child(7) { left: 26%; top: 34%; animation-delay: -4s; animation-duration: 10s; }
+.gw__pollen span:nth-child(8) { left: 64%; top: 76%; animation-delay: -7s; }
+.gw__pollen span:nth-child(9) { left: 88%; top: 66%; animation-delay: -2.5s; animation-duration: 8.5s; }
+
+/* Vidro, batentes e moldura */
+.gw__glass {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(118deg, rgba(255, 255, 255, 0.34) 0 12%, rgba(255, 255, 255, 0) 24% 58%, rgba(255, 255, 255, 0.16) 64%, rgba(255, 255, 255, 0) 72%),
+    radial-gradient(120% 70% at 50% 0%, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 60%);
+}
+
+.gw__frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.gw__rim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 6px #fffaf7,
+    inset 0 0 0 7px rgba(205, 160, 185, 0.45),
+    inset 0 10px 18px rgba(110, 50, 90, 0.18),
+    inset 0 -6px 12px rgba(110, 50, 90, 0.08);
+}
+
+/* Toque: borboleta levanta voo e pétalas se espalham */
+.gw-burst {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.gw-burst__butterfly {
+  position: absolute;
+  left: -14px;
+  top: -12px;
+  width: 28px;
+  animation: gw-takeoff 1.7s cubic-bezier(0.3, 0.6, 0.3, 1) forwards;
+}
+
+.gw-burst__petal {
+  position: absolute;
+  left: -6px;
+  top: -7px;
+  width: 12px;
+  opacity: 0;
+  animation: burst 1.3s cubic-bezier(0.15, 0.7, 0.3, 1) forwards;
+}
+
+html[data-hidden] .gw * {
+  animation-play-state: paused !important;
+}
+
+@keyframes gw-cloud {
+  from { transform: translateX(-12px); }
+  to { transform: translateX(14px); }
+}
+
+@keyframes gw-sway {
+  from { transform: rotate(-2.2deg); }
+  to { transform: rotate(2.4deg); }
+}
+
+@keyframes gw-pollen {
+  0%, 100% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  30% { opacity: 0.95; }
+  50% { transform: translate(6px, -14px) scale(1); opacity: 0.8; }
+  80% { opacity: 0.3; }
+}
+
+@keyframes gw-fly-a {
+  0% { transform: translate(0, 0) rotate(70deg); }
+  20% { transform: translate(260%, -90%) rotate(84deg); }
+  40% { transform: translate(520%, 40%) rotate(62deg); }
+  55% { transform: translate(700%, -60%) rotate(80deg); }
+  75% { transform: translate(940%, 20%) rotate(68deg); }
+  100% { transform: translate(1150%, -110%) rotate(78deg); }
+}
+
+@keyframes gw-fly-b {
+  0% { transform: translate(0, 0) rotate(-72deg); }
+  25% { transform: translate(-330%, 160%) rotate(-86deg); }
+  50% { transform: translate(-660%, 40%) rotate(-64deg); }
+  75% { transform: translate(-1000%, 220%) rotate(-82deg); }
+  100% { transform: translate(-1350%, 120%) rotate(-70deg); }
+}
+
+@keyframes gw-fly-c {
+  0% { transform: translate(0, 0) rotate(20deg); }
+  25% { transform: translate(120%, -380%) rotate(36deg); }
+  50% { transform: translate(380%, -700%) rotate(10deg); }
+  75% { transform: translate(560%, -1050%) rotate(30deg); }
+  100% { transform: translate(800%, -1400%) rotate(18deg); }
+}
+
+@keyframes gw-takeoff {
+  0% { transform: translate(0, 0) scale(0.4) rotate(-10deg); opacity: 0; }
+  15% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translate(34px, -110px) scale(1) rotate(18deg); opacity: 0; }
 }
 
 /* Selo "1 ano" integrado à guirlanda */
@@ -1622,8 +1822,16 @@ html[data-hidden] .perched * {
     scroll-behavior: auto;
   }
   .ambient,
-  .burst {
+  .burst,
+  .gw__flyers,
+  .gw__pollen,
+  .gw-burst {
     display: none !important;
+  }
+  .gw *,
+  .gw__layer {
+    animation: none !important;
+    transform: none !important;
   }
   .sway,
   .envelope,

@@ -1,28 +1,8 @@
 import Image from "next/image";
 import { eventConfig } from "@/config/event";
 import { getPhoto } from "@/lib/photo";
-import { Blossom, Butterfly, Cosmos, FrameCluster, Rose, Sprig, Wreath } from "@/components/garden/art";
-
-/** Composição exibida enquanto a foto da Ayla não for adicionada. */
-function Monogram() {
-  return (
-    <div className="monogram" role="img" aria-label={`Monograma floral com as iniciais ${eventConfig.initials}`}>
-      <svg className="monogram__art" viewBox="0 0 200 250" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
-        <rect width="200" height="250" fill="url(#ay-wash)" />
-        <Sprig x={34} y={240} r={-28} length={74} leaves={5} soft />
-        <Sprig x={166} y={240} r={28} length={74} leaves={5} soft bend={-14} />
-        <Cosmos x={62} y={232} s={0.46} tone="lavender" r={12} />
-        <Blossom x={138} y={226} s={0.66} tone="sky" />
-        <Rose x={100} y={228} s={0.54} tone="blush" />
-        <Blossom x={40} y={208} s={0.46} tone="blush" />
-        <Blossom x={160} y={204} s={0.46} tone="lavender" />
-      </svg>
-      <span className="monogram__letters" aria-hidden="true">
-        {eventConfig.initials}
-      </span>
-    </div>
-  );
-}
+import { Butterfly, FrameCluster, Wreath } from "@/components/garden/art";
+import { GardenWindow } from "@/components/garden/GardenWindow";
 
 export function Portrait() {
   const photo = getPhoto();
@@ -40,7 +20,7 @@ export function Portrait() {
             style={{ objectFit: "cover", objectPosition: photo.focalPoint }}
           />
         ) : (
-          <Monogram />
+          <GardenWindow />
         )}
       </div>
       <FrameCluster className="portrait__cluster" />

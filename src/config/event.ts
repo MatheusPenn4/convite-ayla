@@ -10,8 +10,6 @@ export const eventConfig = {
   fullName: "Ayla Sophia de Lima Penna",
   /** Nome em destaque. */
   displayName: "Ayla Sophia",
-  /** Iniciais usadas no monograma floral quando a foto não está disponível. */
-  initials: "AS",
   /** Idade comemorada. */
   age: 1,
   theme: "Jardim Encantado",
@@ -35,7 +33,7 @@ export const eventConfig = {
   /**
    * Foto da aniversariante. Coloque o arquivo em /public/images/ e informe
    * o caminho (ex.: "/images/ayla.jpg"). Enquanto pendente, o convite mostra
-   * um monograma floral com as iniciais.
+   * uma janela com vista para o jardim encantado.
    */
   photo: {
     src: "[ARQUIVO DA FOTO DA AYLA]",
