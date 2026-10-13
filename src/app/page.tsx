@@ -1,6 +1,5 @@
 import { GardenDefs } from "@/components/garden/art";
-import { ArtImg } from "@/components/garden/ArtImg";
-import { AmbientGarden } from "@/components/garden/AmbientGarden";
+import { InviteBackdrop } from "@/components/garden/InviteBackdrop";
 import { OpeningScreen } from "@/components/envelope/OpeningScreen";
 import { Hero } from "@/components/invite/Hero";
 import { PartyDetails } from "@/components/invite/PartyDetails";
@@ -20,13 +19,7 @@ export default function InvitationPage() {
       <noscript>
         <style>{`.envelope-screen{display:none!important}`}</style>
       </noscript>
-      <div className="side-garden" aria-hidden="true">
-        <ArtImg name="corner-bouquet" className="side-garden__piece side-garden__piece--tl" />
-        <ArtImg name="corner-bouquet" className="side-garden__piece side-garden__piece--bl" />
-        <ArtImg name="corner-bouquet-mirror" className="side-garden__piece side-garden__piece--tr" />
-        <ArtImg name="corner-bouquet-mirror" className="side-garden__piece side-garden__piece--br" />
-      </div>
-      <AmbientGarden />
+      <InviteBackdrop />
 
       <SafeBoundary>
         <OpeningScreen />

@@ -43,7 +43,9 @@ export const viewport: Viewport = {
 };
 
 // Executa antes da pintura: marca JS ativo e pula o envelope se já foi aberto nesta sessão.
-const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{if(sessionStorage.getItem('ayla:envelope')==='open'||location.hash==='#convite')d.dataset.envelope='open'}catch(e){}})();`;
+// Também marca quando a pessoa usa o teclado (data-kbd): o contorno de foco dos
+// elementos que recebem foco por código (abertura e título) só aparece nesse caso.
+const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{if(sessionStorage.getItem('ayla:envelope')==='open'||location.hash==='#convite')d.dataset.envelope='open'}catch(e){}addEventListener('keydown',function(e){if(!e.metaKey&&!e.ctrlKey&&!e.altKey)d.dataset.kbd=''},true);addEventListener('pointerdown',function(){delete d.dataset.kbd},true)})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

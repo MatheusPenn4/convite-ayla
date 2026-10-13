@@ -9,7 +9,6 @@ import {
   Wreath,
 } from "./art";
 import { FrontLayer, HillsLayer, MeadowLayer, SkyLayer, TreesLayer } from "./garden-scene";
-import { OpeningBottom, OpeningBranch, OpeningTop } from "./opening-art";
 import { ButterflyBodyArt, ButterflyWingArt } from "./butterfly-art";
 import type { ArtName } from "./art-sizes";
 
@@ -28,9 +27,6 @@ export const ART_CATALOG: Record<ArtName, () => ReactElement> = {
   "gw-trees": () => <TreesLayer />,
   "gw-meadow": () => <MeadowLayer />,
   "gw-front": () => <FrontLayer />,
-  "opening-top": () => <OpeningTop />,
-  "opening-bottom": () => <OpeningBottom />,
-  "opening-branch": () => <OpeningBranch />,
   "bf-rose-wing": () => <ButterflyWingArt tone="rose" />,
   "bf-rose-body": () => <ButterflyBodyArt tone="rose" />,
   "bf-peach-wing": () => <ButterflyWingArt tone="peach" />,

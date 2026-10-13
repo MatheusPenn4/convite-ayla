@@ -2,9 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type MouseEvent } from "react";
 import { eventConfig } from "@/config/event";
-import { ArtImg } from "@/components/garden/ArtImg";
 import { FancyButterfly3D } from "@/components/garden/FancyButterfly3D";
-import type { ButterflyTone } from "@/components/garden/butterfly-art";
 import { requestMotionPermission } from "@/lib/motion-permission";
 
 type Phase = "closed" | "opening" | "done";
@@ -14,17 +12,62 @@ const STORAGE_KEY = "ayla:envelope";
 const OPENING_MS = 1700;
 const REDUCED_MS = 260;
 
-/** Borboletas que pairam e cruzam a tela; cada uma com cor, tamanho, rota e ritmo próprios. */
-const FLYERS: Array<{ tone: ButterflyTone; cls: string; flap: string; ax: string; ay: string }> = [
-  { tone: "peach", cls: "a", flap: ".42s", ax: "-60vw", ay: "-40vh" },
-  { tone: "iris", cls: "b", flap: ".5s", ax: "60vw", ay: "-45vh" },
-  { tone: "rose", cls: "c", flap: ".36s", ax: "70vw", ay: "-20vh" },
-  { tone: "lavender", cls: "d", flap: ".46s", ax: "-70vw", ay: "-30vh" },
-  { tone: "sky", cls: "e", flap: ".4s", ax: "40vw", ay: "-70vh" },
-  { tone: "orchid", cls: "f", flap: ".55s", ax: "-50vw", ay: "40vh" },
-];
-
 const KICKER = "CONVITE";
+
+const VIDEO = {
+  portrait: { src: "/video/abertura-retrato.mp4", poster: "/video/abertura-retrato.jpg" },
+  landscape: { src: "/video/abertura-paisagem.mp4", poster: "/video/abertura-paisagem.jpg" },
+};
+const LANDSCAPE_QUERY = "(min-aspect-ratio: 1/1)";
+
+/**
+ * Fundo em vídeo (flores, borboletas e brilhos em loop, feito no Remotion).
+ * A imagem do primeiro quadro aparece na hora; o vídeo entra por cima quando
+ * começa a tocar. Com movimento reduzido, fica só a imagem.
+ */
+function OpeningVideo() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || prefersReducedMotion()) return;
+    const mq = window.matchMedia(LANDSCAPE_QUERY);
+    const load = () => {
+      const next = VIDEO[mq.matches ? "landscape" : "portrait"].src;
+      if (video.getAttribute("src") === next) return;
+      setPlaying(false);
+      video.muted = true;
+      video.src = next;
+      video.play().catch(() => {
+        /* autoplay bloqueado (ex.: modo economia do iPhone): fica a imagem */
+      });
+    };
+    load();
+    mq.addEventListener("change", load);
+    return () => mq.removeEventListener("change", load);
+  }, []);
+
+  return (
+    <div className="opening__media" aria-hidden="true">
+      <picture>
+        <source media={LANDSCAPE_QUERY} srcSet={VIDEO.landscape.poster} />
+        {/* eslint-disable-next-line @next/next/no-img-element -- quadro inicial do vídeo, já otimizado */}
+        <img className="opening__poster" src={VIDEO.portrait.poster} alt="" decoding="async" fetchPriority="high" />
+      </picture>
+      <video
+        ref={videoRef}
+        className={`opening__video${playing ? " is-playing" : ""}`}
+        muted
+        loop
+        playsInline
+        preload="auto"
+        disablePictureInPicture
+        onPlaying={() => setPlaying(true)}
+      />
+    </div>
+  );
+}
 
 function prefersReducedMotion() {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -96,30 +139,7 @@ export function OpeningScreen() {
 
   return (
     <section className={`envelope-screen opening${phase === "opening" ? " is-opening" : ""}`} aria-label="Abertura do convite">
-      <span className="opening__glow opening__glow--a" aria-hidden="true" />
-      <span className="opening__glow opening__glow--b" aria-hidden="true" />
-
-      <ArtImg name="opening-branch" className="opening__branch" eager />
-      <ArtImg name="opening-top" className="opening__flowers opening__flowers--top" eager />
-      <ArtImg name="opening-bottom" className="opening__flowers opening__flowers--bottom" eager />
-
-      <div className="opening__sparkles" aria-hidden="true">
-        {Array.from({ length: 16 }, (_, i) => (
-          <span key={i} />
-        ))}
-      </div>
-
-      <div className="opening__flyers" aria-hidden="true">
-        {FLYERS.map((f) => (
-          <span
-            key={f.cls}
-            className={`opening__fly opening__fly--${f.cls}`}
-            style={{ "--flap": f.flap, "--ax": f.ax, "--ay": f.ay } as CSSProperties}
-          >
-            <FancyButterfly3D tone={f.tone} />
-          </span>
-        ))}
-      </div>
+      <OpeningVideo />
 
       <button
         ref={buttonRef}
