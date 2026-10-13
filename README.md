@@ -124,6 +124,22 @@ pessoas, edição de nomes e integrantes, exclusão com confirmação, exportaç
 
 ---
 
+## Lista de convidados (mãe e pai)
+
+A aba **Convidados** do `/admin` mostra quem foi convidado, separado entre a lista da mãe e a do pai,
+com totais (geral, por lado, adultos/crianças) e a situação de cada pessoa: pendente, confirmado ou não vai.
+
+- **Os nomes não ficam no código** (o repositório é público). Eles entram no banco por um arquivo
+  `db/*.local.sql`, que o Git ignora: cole o conteúdo no SQL Editor do Neon e clique em Run.
+  O arquivo já cria a tabela e só insere se a lista estiver vazia (pode rodar de novo sem duplicar).
+- **Confirmação automática:** quando alguém confirma pelo site, o nome é procurado na lista. Primeiro
+  nome único, sobrenome que desempata ou família de quem veio junto marcam a pessoa como confirmada.
+  Acompanhantes sem nome na lista (ex.: "bebê do Gustavo") ocupam a vaga da mesma família.
+- **Em caso de dúvida** (ex.: duas pessoas com o mesmo nome), o nome aparece no quadro
+  "Confirmaram pelo site, mas não encontrei na lista" para vincular com um toque ou incluir como novo.
+- Editar uma confirmação refaz os vínculos automáticos; excluir a confirmação devolve as pessoas para pendente.
+- Também dá para marcar à mão, editar nomes, incluir e remover convidados, e exportar a lista em CSV.
+
 ## Estrutura
 
 ```

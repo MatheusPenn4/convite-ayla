@@ -13,3 +13,6 @@ Thumbs.db
 
 # Cartão gerado localmente (a versão publicada fica em /convite.png)
 convite-whatsapp.png
+
+# Lista de convidados com nomes reais (o repositório é público: nunca versionar)
+*.local.sql

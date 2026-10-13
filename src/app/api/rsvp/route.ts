@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getDb, isInvalidDataError } from "@/lib/db";
 import { allowAttempt } from "@/lib/rate-limit";
+import { linkRsvpToGuests } from "@/lib/guests";
 import { MAX_BODY_BYTES, isSubmissionId, validateRsvp } from "@/lib/validation";
 import type { RsvpResponse, SavedRsvp } from "@/lib/rsvp-types";
 
@@ -105,6 +106,18 @@ export async function POST(request: NextRequest) {
       companions: saved.companions.filter((c): c is string => typeof c === "string"),
       total: saved.total,
     };
+    // Marca na lista de convidados quem acabou de confirmar (falha aqui não afeta o convidado).
+    if (saved.replayed !== true) {
+      try {
+        const { rows: ids } = await db.query<{ id: string }>("select id from public.rsvps where submission_id = $1::uuid", [
+          submissionId,
+        ]);
+        if (ids[0]) await linkRsvpToGuests(db, ids[0].id, [rsvp.name, ...rsvp.companions]);
+      } catch (err) {
+        console.error("[rsvp] falha ao vincular à lista", { code: (err as { code?: string } | null)?.code ?? "unknown" });
+      }
+    }
+
     return reply({ ok: true, rsvp, replayed: saved.replayed === true }, 200);
   } catch (err) {
     // Registra apenas o código do erro, nunca os nomes.

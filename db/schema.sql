@@ -167,3 +167,38 @@ revoke all on table public.rsvps       from public;
 revoke all on table public.rate_limits from public;
 revoke all on function public.submit_rsvp(uuid, text, text[])          from public;
 revoke all on function public.rate_limit_hit(text, integer, integer)   from public;
+
+-- ---------------------------------------------------------------------------
+-- Lista de convidados (quem foi convidado), separada entre mãe e pai.
+-- Confirmações feitas no site são vinculadas automaticamente pelo nome;
+-- os responsáveis ajustam o restante pelo /admin.
+-- ---------------------------------------------------------------------------
+create table if not exists public.guests (
+  id             uuid primary key default gen_random_uuid(),
+  side           text not null check (side in ('mae', 'pai')),
+  section        text not null default '' check (char_length(section) <= 60),
+  household      text check (household is null or char_length(household) <= 60),
+  name           text not null check (char_length(btrim(name)) between 1 and 120),
+  note           text check (note is null or char_length(note) <= 120),
+  is_child       boolean not null default false,
+  -- Vaga sem nome definido (ex.: "bebê do Gustavo"): preenchida por acompanhante da mesma família.
+  is_placeholder boolean not null default false,
+  status         text not null default 'pendente' check (status in ('pendente', 'confirmado', 'nao_vai')),
+  confirmed_by   text check (confirmed_by in ('site', 'manual')),
+  confirmed_name text check (confirmed_name is null or char_length(confirmed_name) <= 120),
+  rsvp_id        uuid references public.rsvps (id) on delete set null,
+  position       integer not null default 0,
+  created_at     timestamptz not null default now(),
+  updated_at     timestamptz not null default now()
+);
+
+create index if not exists guests_side_position_idx on public.guests (side, position);
+create index if not exists guests_rsvp_idx on public.guests (rsvp_id);
+
+drop trigger if exists guests_set_updated_at on public.guests;
+create trigger guests_set_updated_at
+  before update on public.guests
+  for each row execute function public.set_updated_at();
+
+alter table public.guests enable row level security;
+revoke all on table public.guests from public;
