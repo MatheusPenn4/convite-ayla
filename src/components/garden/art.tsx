@@ -445,16 +445,3 @@ export function CountdownFlowers(props: ArtProps) {
     </Art>
   );
 }
-
-/** Raminho no canto do envelope. */
-export function EnvelopeFlowers(props: ArtProps) {
-  return (
-    <Art viewBox="0 0 120 70" {...props}>
-      <Sprig x={22} y={68} r={-50} length={58} leaves={5} soft />
-      <Sprig x={26} y={68} r={-12} length={40} leaves={3} />
-      <Rose x={30} y={56} s={0.38} tone="rose" />
-      <Blossom x={52} y={61} s={0.5} tone="sky" />
-      <Blossom x={14} y={46} s={0.42} tone="lavender" />
-    </Art>
-  );
-}

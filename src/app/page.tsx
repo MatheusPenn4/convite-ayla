@@ -1,7 +1,7 @@
 import { GardenDefs } from "@/components/garden/art";
 import { ArtImg } from "@/components/garden/ArtImg";
 import { AmbientGarden } from "@/components/garden/AmbientGarden";
-import { Envelope } from "@/components/envelope/Envelope";
+import { OpeningScreen } from "@/components/envelope/OpeningScreen";
 import { Hero } from "@/components/invite/Hero";
 import { PartyDetails } from "@/components/invite/PartyDetails";
 import { Countdown } from "@/components/invite/Countdown";
@@ -29,7 +29,7 @@ export default function InvitationPage() {
       <AmbientGarden />
 
       <SafeBoundary>
-        <Envelope />
+        <OpeningScreen />
       </SafeBoundary>
 
       <main id="convite" className="invite" tabIndex={-1}>

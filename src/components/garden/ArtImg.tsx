@@ -9,7 +9,7 @@ export function ArtImg({ name, className, eager = false }: { name: ArtName; clas
   return (
     // eslint-disable-next-line @next/next/no-img-element -- SVG vetorial estático, sem otimização de imagem
     <img
-      src={`/art/${name}.svg`}
+      src={`/art/${name}.svg?v=${process.env.NEXT_PUBLIC_ART_VERSION ?? "1"}`}
       width={width}
       height={height}
       alt=""

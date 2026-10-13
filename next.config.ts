@@ -6,8 +6,12 @@ const securityHeaders = [
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
 ];
 
+// Versão das ilustrações (/art/*.svg): muda a cada deploy para o cache do navegador não guardar desenhos antigos.
+const artVersion = (process.env.VERCEL_GIT_COMMIT_SHA ?? Date.now().toString(36)).slice(0, 10);
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  env: { NEXT_PUBLIC_ART_VERSION: artVersion },
   images: {
     formats: ["image/avif", "image/webp"],
   },
