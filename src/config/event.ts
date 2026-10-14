@@ -53,6 +53,24 @@ export const eventConfig = {
     imageAlt: "Convite floral do primeiro aninho da Ayla Sophia, 13 de dezembro de 2026, às 19h",
   },
 
+  /** Sugestões de presente (exibidas em "Sugestão de presente"). */
+  gifts: {
+    suggestions: [
+      "Vestidinhos e conjuntos de roupa",
+      "Blusinhas e shorts",
+      "Bodies e macacões",
+      "Sandalinhas e sapatilhas",
+      "Tênis infantil",
+      "Brinquedos educativos",
+      "Brinquedos de encaixe",
+      "Livrinhos infantis",
+    ],
+    sizes: [
+      { label: "Roupas", value: "1 a 2 aninhos" },
+      { label: "Calçados", value: "numeração 19 e 20" },
+    ],
+  },
+
   rsvp: {
     /** Limite de familiares por confirmação (protege contra envios abusivos). */
     maxCompanions: 15,

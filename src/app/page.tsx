@@ -4,6 +4,7 @@ import { OpeningScreen } from "@/components/envelope/OpeningScreen";
 import { Hero } from "@/components/invite/Hero";
 import { PartyDetails } from "@/components/invite/PartyDetails";
 import { Countdown } from "@/components/invite/Countdown";
+import { GiftSuggestions } from "@/components/invite/GiftSuggestions";
 import { Closing } from "@/components/invite/Closing";
 import { RsvpSection } from "@/components/rsvp/RsvpSection";
 import { PageEffects } from "@/components/motion/PageEffects";
@@ -30,6 +31,7 @@ export default function InvitationPage() {
         <PartyDetails />
         <Countdown />
         <RsvpSection deadline={rsvpDeadline} />
+        <GiftSuggestions />
         <Closing />
       </main>
 

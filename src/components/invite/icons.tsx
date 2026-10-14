@@ -87,3 +87,11 @@ export const CheckIcon = (p: SVGProps<SVGSVGElement>) => (
     <path d="M5 12.5l4.5 4.5L19 7.5" />
   </Icon>
 );
+
+export const GiftIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <rect x="3.5" y="9" width="17" height="4" rx="1.4" />
+    <path d="M5 13v6.2a1.3 1.3 0 0 0 1.3 1.3h11.4a1.3 1.3 0 0 0 1.3-1.3V13M12 9v11.5" />
+    <path d="M12 9c-1.2-3.6-5.4-3.9-5.4-1.6C6.6 9 9.4 9 12 9Zm0 0c1.2-3.6 5.4-3.9 5.4-1.6C17.4 9 14.6 9 12 9Z" />
+  </Icon>
+);
