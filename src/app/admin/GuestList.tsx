@@ -20,13 +20,35 @@ function fold(text: string) {
     .trim();
 }
 
+type Kind = "adulto" | "crianca" | "bebe";
+const kindOf = (g: Pick<Guest, "is_child" | "is_baby">): Kind => (g.is_baby ? "bebe" : g.is_child ? "crianca" : "adulto");
+
+/** Bebês (menos de 5 anos) ficam na lista, mas não entram nos totais de convidados. */
 function counts(list: Guest[]) {
-  const c = { total: list.length, confirmado: 0, pendente: 0, nao_vai: 0, criancas: 0 };
+  const c = { total: 0, confirmado: 0, pendente: 0, nao_vai: 0, criancas: 0, bebes: 0 };
   for (const g of list) {
+    if (g.is_baby) {
+      c.bebes += 1;
+      continue;
+    }
+    c.total += 1;
     c[g.status] += 1;
     if (g.is_child) c.criancas += 1;
   }
   return c;
+}
+
+function KindField({ id, value, onChange }: { id: string; value: Kind; onChange: (k: Kind) => void }) {
+  return (
+    <div className="admin-field">
+      <label htmlFor={id}>Tipo</label>
+      <select id={id} value={value} onChange={(e) => onChange(e.target.value as Kind)}>
+        <option value="adulto">Adulto</option>
+        <option value="crianca">Criança</option>
+        <option value="bebe">Bebê (menos de 5 anos, não conta)</option>
+      </select>
+    </div>
+  );
 }
 
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
@@ -59,6 +81,9 @@ export function GuestList({ guests, unlinked }: { guests: Guest[]; unlinked: Unl
           <span className="admin-stat__sub">
             {plural(all.total - all.criancas, "adulto", "adultos")} · {plural(all.criancas, "criança", "crianças")}
           </span>
+          {all.bebes ? (
+            <span className="admin-stat__sub">+ {plural(all.bebes, "bebê", "bebês")} com menos de 5 anos (fora da conta)</span>
+          ) : null}
         </div>
         {(["mae", "pai"] as const).map((s) => (
           <div className="admin-stat" key={s}>
@@ -208,7 +233,13 @@ function GuestRow({ guest }: { guest: Guest }) {
       <div className="guest-row__info">
         <span className="guest-row__name">{guest.name}</span>
         {guest.note ? <span className="guest-row__note">{guest.note}</span> : null}
-        {guest.is_child ? <span className="admin-chip admin-chip--soft">criança</span> : null}
+        {guest.is_baby ? (
+          <span className="admin-chip admin-chip--soft" title="Menos de 5 anos: não conta como convidado">
+            bebê (menos de 5 anos)
+          </span>
+        ) : guest.is_child ? (
+          <span className="admin-chip admin-chip--soft">criança</span>
+        ) : null}
         {guest.status === "confirmado" && guest.confirmed_name ? (
           <span className="guest-row__via">
             {guest.confirmed_by === "site" ? "confirmou pelo site" : "vinculado"} como “{guest.confirmed_name}”
@@ -229,7 +260,7 @@ function EditGuest({ guest, onDone }: { guest: Guest; onDone: () => void }) {
   const router = useRouter();
   const [name, setName] = useState(guest.name);
   const [note, setNote] = useState(guest.note ?? "");
-  const [isChild, setIsChild] = useState(guest.is_child);
+  const [kind, setKind] = useState<Kind>(kindOf(guest));
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const id = `edit-guest-${guest.id}`;
@@ -242,7 +273,8 @@ function EditGuest({ guest, onDone }: { guest: Guest; onDone: () => void }) {
         household: guest.household,
         name,
         note,
-        isChild,
+        isChild: kind !== "adulto",
+        isBaby: kind === "bebe",
       });
       if (!r.ok) return setError(r.message);
       router.refresh();
@@ -276,9 +308,7 @@ function EditGuest({ guest, onDone }: { guest: Guest; onDone: () => void }) {
           <label htmlFor={`${id}-note`}>Observação</label>
           <input id={`${id}-note`} value={note} onChange={(e) => setNote(e.target.value)} placeholder="ex.: irmão, 5 anos" />
         </div>
-        <label className="admin-check">
-          <input type="checkbox" checked={isChild} onChange={(e) => setIsChild(e.target.checked)} /> Criança
-        </label>
+        <KindField id={`${id}-kind`} value={kind} onChange={setKind} />
         {error ? (
           <p className="admin-error" role="alert">
             {error}
@@ -307,7 +337,7 @@ function AddGuest({ side, all }: { side: GuestSide; all: Guest[] }) {
   const [note, setNote] = useState("");
   const [section, setSection] = useState("");
   const [household, setHousehold] = useState("");
-  const [isChild, setIsChild] = useState(false);
+  const [kind, setKind] = useState<Kind>("adulto");
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -327,11 +357,11 @@ function AddGuest({ side, all }: { side: GuestSide; all: Guest[] }) {
   const submit = () =>
     start(async () => {
       const famSection = household ? all.find((g) => g.household === household)?.section ?? section : section;
-      const r = await saveGuest(null, { side, section: famSection, household: household || null, name, note, isChild });
+      const r = await saveGuest(null, { side, section: famSection, household: household || null, name, note, isChild: kind !== "adulto", isBaby: kind === "bebe" });
       if (!r.ok) return setError(r.message);
       setName("");
       setNote("");
-      setIsChild(false);
+      setKind("adulto");
       setError(null);
       router.refresh();
     });
@@ -375,9 +405,7 @@ function AddGuest({ side, all }: { side: GuestSide; all: Guest[] }) {
           </datalist>
         </div>
       ) : null}
-      <label className="admin-check">
-        <input type="checkbox" checked={isChild} onChange={(e) => setIsChild(e.target.checked)} /> Criança
-      </label>
+      <KindField id={`${idBase}-kind`} value={kind} onChange={setKind} />
       {error ? (
         <p className="admin-error" role="alert">
           {error}

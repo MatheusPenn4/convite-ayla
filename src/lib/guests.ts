@@ -17,6 +17,8 @@ export type Guest = {
   name: string;
   note: string | null;
   is_child: boolean;
+  /** Menos de 5 anos: fica na lista, mas não conta como convidado nos totais. */
+  is_baby: boolean;
   is_placeholder: boolean;
   status: GuestStatus;
   confirmed_by: "site" | "manual" | null;
@@ -30,17 +32,20 @@ export function isMissingTable(err: unknown) {
   return (err as { code?: string } | null)?.code === "42P01";
 }
 
+const GUEST_COLUMNS = `id, side, section, household, name, note, is_child, is_placeholder, status,
+                       confirmed_by, confirmed_name, rsvp_id, position`;
+
 export async function fetchGuests(db: Pool): Promise<Guest[] | null> {
+  const run = (extra: string) =>
+    db.query<Guest>(`select ${GUEST_COLUMNS}${extra} from public.guests order by side, position, created_at`);
   try {
-    const { rows } = await db.query<Guest>(
-      `select id, side, section, household, name, note, is_child, is_placeholder, status,
-              confirmed_by, confirmed_name, rsvp_id, position
-         from public.guests
-        order by side, position, created_at`,
-    );
-    return rows;
+    return (await run(", is_baby")).rows;
   } catch (err) {
     if (isMissingTable(err)) return null;
+    // Coluna "is_baby" ainda não criada (SQL novo não rodado): a lista funciona, sem a marcação.
+    if ((err as { code?: string } | null)?.code === "42703") {
+      return (await run(", false as is_baby")).rows;
+    }
     throw err;
   }
 }

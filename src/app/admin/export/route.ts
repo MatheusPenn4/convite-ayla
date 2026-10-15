@@ -39,14 +39,15 @@ export async function GET(request: Request) {
     const heads = new Map<string, string>();
     for (const g of guests) if (g.household && !heads.has(g.household)) heads.set(g.household, g.name);
     const rows: Array<Array<string | number>> = [
-      ["Lista", "Grupo", "Família de", "Nome", "Observação", "Criança", "Situação", "Confirmou como"],
+      ["Lista", "Grupo", "Família de", "Nome", "Observação", "Tipo", "Conta como convidado", "Situação", "Confirmou como"],
       ...guests.map((g) => [
         SIDE[g.side],
         g.section,
         g.household ? heads.get(g.household) ?? "" : "",
         g.name,
         g.note ?? "",
-        g.is_child ? "Sim" : "Não",
+        g.is_baby ? "Bebê (menos de 5 anos)" : g.is_child ? "Criança" : "Adulto",
+        g.is_baby ? "Não" : "Sim",
         STATUS[g.status],
         g.confirmed_name ?? "",
       ]),

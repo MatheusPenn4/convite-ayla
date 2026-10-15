@@ -181,6 +181,8 @@ create table if not exists public.guests (
   name           text not null check (char_length(btrim(name)) between 1 and 120),
   note           text check (note is null or char_length(note) <= 120),
   is_child       boolean not null default false,
+  -- Bebê/criança com menos de 5 anos: não conta como convidado nos totais (marcado à mão no /admin).
+  is_baby        boolean not null default false,
   -- Vaga sem nome definido (ex.: "bebê do Gustavo"): preenchida por acompanhante da mesma família.
   is_placeholder boolean not null default false,
   status         text not null default 'pendente' check (status in ('pendente', 'confirmado', 'nao_vai')),
@@ -191,6 +193,9 @@ create table if not exists public.guests (
   created_at     timestamptz not null default now(),
   updated_at     timestamptz not null default now()
 );
+
+-- Bancos criados antes desta coluna existir.
+alter table public.guests add column if not exists is_baby boolean not null default false;
 
 create index if not exists guests_side_position_idx on public.guests (side, position);
 create index if not exists guests_rsvp_idx on public.guests (rsvp_id);

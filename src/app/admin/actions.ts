@@ -122,6 +122,7 @@ export type GuestInput = {
   name: string;
   note: string;
   isChild: boolean;
+  isBaby?: boolean;
 };
 
 export async function saveGuest(id: string | null, input: GuestInput): Promise<MutationResult> {
@@ -135,20 +136,21 @@ export async function saveGuest(id: string | null, input: GuestInput): Promise<M
   const note = clip(input.note, 120) || null;
   const section = clip(input.section, 60);
   const household = input.household ? clip(input.household, 60) || null : null;
+  const isBaby = input.isBaby === true;
 
   try {
     if (id) {
       const { rowCount } = await ctx.db.query(
-        `update public.guests set name = $2, note = $3, is_child = $4, is_placeholder = false where id = $1::uuid`,
-        [id, name, note, input.isChild === true],
+        `update public.guests set name = $2, note = $3, is_child = $4, is_baby = $5, is_placeholder = false where id = $1::uuid`,
+        [id, name, note, isBaby || input.isChild === true, isBaby],
       );
       if (!rowCount) return { ok: false, message: "Convidado não encontrado." };
     } else {
       await ctx.db.query(
-        `insert into public.guests (side, section, household, name, note, is_child, position)
-         values ($1, $2, $3, $4, $5, $6,
+        `insert into public.guests (side, section, household, name, note, is_child, is_baby, position)
+         values ($1, $2, $3, $4, $5, $6, $7,
                  coalesce((select max(position) + 1 from public.guests where side = $1), 0))`,
-        [input.side, section, household, name, note, input.isChild === true],
+        [input.side, section, household, name, note, isBaby || input.isChild === true, isBaby],
       );
     }
   } catch {
